@@ -1,0 +1,30 @@
+:root{--p:#582b7e;--p-mid:#7a45a8;--p-dark:#2a1241;--p-deep:#1b0b2e;--lav:#f4eff9;--lav-2:#e6dcf1;--gold:#f2b632;--ink:#21162e;--muted:#6a5d78;--line:#e3daee;--danger:#b3261e}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--lav);color:var(--ink);line-height:1.8;font-size:17px}
+h1,h2,h3,h4,.btn,.lang-btn,.chip{font-family:'Cairo','Tajawal',sans-serif}
+input,select,textarea,button{font-family:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1120px;margin:auto;padding:0 1.2rem}
+header{position:sticky;top:0;z-index:50;background:rgba(27,11,46,.95);backdrop-filter:blur(10px);color:#fff}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.55rem}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none;color:#fff}
+.logo{width:46px;height:46px;border-radius:50%;background:#fff;object-fit:contain;flex:none}
+.brand b{font-family:'Cairo';font-size:1.05rem}
+nav{display:flex;align-items:center;gap:1.5rem}
+nav a{color:#fff;text-decoration:none;font-weight:500;opacity:.85;font-size:.97rem}
+nav a:hover,nav a.on{opacity:1;color:var(--gold)}
+.lang-btn{background:transparent;color:var(--gold);border:1.5px solid var(--gold);padding:.3rem 1rem;border-radius:999px;font-weight:700;cursor:pointer;font-size:.9rem}
+.lang-btn:hover{background:var(--gold);color:var(--p-deep)}
+@media(max-width:720px){nav a.hide-m{display:none}.brand b{font-size:.9rem}}
+.btn{display:inline-block;background:var(--gold);color:var(--p-deep);padding:.8rem 2rem;border-radius:12px;font-weight:900;font-size:1rem;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(242,182,50,.35)}
+.btn.purple{background:var(--p);color:#fff}
+.btn.purple:hover{box-shadow:0 10px 24px rgba(88,43,126,.35)}
+.btn:disabled{opacity:.55;cursor:wait;transform:none;box-shadow:none}
+.page-hero{color:#fff;text-align:center;padding:3rem 1rem 4.5rem;background:radial-gradient(circle at 80% 0,rgba(122,69,168,.55),transparent 55%),linear-gradient(160deg,var(--p-dark),var(--p-deep))}
+.page-hero h1{font-size:clamp(1.8rem,4vw,2.7rem);font-weight:900}
+.page-hero p{color:#d9c8ec;font-size:1.1rem;margin-top:.4rem}
+footer{background:var(--p-deep);color:#cdbfe0;text-align:center;padding:2rem 1rem;font-size:.95rem;margin-top:3rem}
+footer img{width:56px;height:56px;border-radius:50%;background:#fff;object-fit:contain;margin-bottom:.6rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
