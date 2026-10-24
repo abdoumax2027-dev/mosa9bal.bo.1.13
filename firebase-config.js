@@ -3,10 +3,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyBREPKprsMXlH_ejlXLHNLltyWanvUweMU",
+  authDomain: "moda9bal.firebaseapp.com",
+  projectId: "moda9bal",
+  appId: "1:555350108884:web:8fd567de05cbd8cece2941"
 };
 
 export const configured = !firebaseConfig.apiKey.startsWith("PASTE");
