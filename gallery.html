@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معرض أنشطة فوج المستقبل - بوقيرات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:-1.8rem auto 2rem;position:relative;z-index:5}
+.chip{border:0;background:#fff;color:var(--p);padding:.5rem 1.3rem;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(42,18,65,.12);font-size:.95rem}
+.chip:hover{background:var(--lav-2)}
+.chip.on{background:var(--p);color:#fff}
+.grid{columns:3 260px;column-gap:1rem}
+.card{break-inside:avoid;margin-bottom:1rem;position:relative;border-radius:16px;overflow:hidden;background:var(--lav-2);cursor:pointer;box-shadow:0 8px 24px rgba(42,18,65,.1);display:block;width:100%;border:0;padding:0;text-align:inherit}
+.card img{display:block;width:100%;height:auto;transition:transform .4s}
+.card:hover img{transform:scale(1.04)}
+.cap{position:absolute;inset:auto 0 0 0;padding:2.2rem 1rem .8rem;color:#fff;background:linear-gradient(transparent,rgba(27,11,46,.88))}
+.cap b{display:block;font-family:'Cairo';font-size:1rem;line-height:1.4}
+.cap small{opacity:.8;font-size:.82rem}
+.tag{position:absolute;top:.7rem;inset-inline-start:.7rem;background:var(--gold);color:var(--p-deep);font-family:'Cairo';font-weight:700;font-size:.78rem;padding:.1rem .7rem;border-radius:999px}
+.status{text-align:center;color:var(--muted);padding:3rem 1rem}
+.status .big{font-size:3rem}
+.more{text-align:center;margin-top:1.5rem}
+.skel{height:220px;border-radius:16px;margin-bottom:1rem;break-inside:avoid;background:linear-gradient(90deg,var(--lav-2),#f0e9f7,var(--lav-2));background-size:200% 100%;animation:sh 1.4s infinite}
+.skel:nth-child(2n){height:300px}.skel:nth-child(3n){height:180px}
+@keyframes sh{to{background-position:-200% 0}}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(15,5,26,.94);display:none;flex-direction:column;align-items:center;justify-content:center;padding:1rem}
+.lb.open{display:flex}
+.lb img{max-width:min(1100px,94vw);max-height:72vh;border-radius:12px;object-fit:contain;background:#000}
+.lb img.blur{filter:blur(6px)}
+.lb-info{color:#fff;text-align:center;max-width:700px;margin-top:1rem}
+.lb-info h3{color:var(--gold);font-size:1.2rem}
+.lb-info small{color:#cbb9de}
+.lb-info p{margin-top:.3rem;font-size:.97rem}
+.lb button{position:absolute;background:rgba(255,255,255,.12);color:#fff;border:0;width:48px;height:48px;border-radius:50%;font-size:1.5rem;cursor:pointer}
+.lb button:hover{background:var(--gold);color:var(--p-deep)}
+.lb .x{top:1rem;inset-inline-end:1rem}
+.lb .pv{inset-inline-start:1rem;top:50%}
+.lb .nx{inset-inline-end:1rem;top:50%}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html"><img src="logo.png" alt="" class="logo"><b data-i18n="brand">فوج المستقبل للكشافة</b></a>
+    <nav>
+      <a href="index.html" class="hide-m" data-i18n="home">الرئيسية</a>
+      <a href="gallery.html" class="on hide-m" data-i18n="gal">معرض الأنشطة</a>
+      <a href="index.html#register" class="hide-m" data-i18n="reg">الانتساب</a>
+      <button class="lang-btn" id="langBtn" type="button">English</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1 data-i18n="title">معرض أنشطة الفوج</h1>
+  <p data-i18n="sub">لحظات من مخيماتنا ورحلاتنا وورشاتنا</p>
+</div>
+
+<main class="wrap">
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  <div class="status" id="status"></div>
+  <div class="more"><button class="btn purple" id="moreBtn" style="display:none" data-i18n="more">عرض المزيد</button></div>
+</main>
+
+<footer>
+  <img src="logo.png" alt=""><br>
+  <p data-i18n="foot">© 2026 فوج المستقبل للكشافة الإسلامية الجزائرية - جميع الحقوق محفوظة</p>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="x" id="lbX" aria-label="إغلاق">✕</button>
+  <button class="pv" id="lbP" aria-label="السابق">›</button>
+  <button class="nx" id="lbN" aria-label="التالي">‹</button>
+  <img id="lbImg" alt="">
+  <div class="lb-info"><h3 id="lbT"></h3><small id="lbD"></small><p id="lbDesc"></p></div>
+</div>
+
+<script type="module">
+import {db,configured} from './firebase-config.js';
+import {collection,query,orderBy,limit,startAfter,getDocs,doc,getDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const T={ar:{brand:"فوج المستقبل للكشافة",home:"الرئيسية",gal:"معرض الأنشطة",reg:"الانتساب",title:"معرض أنشطة الفوج",sub:"لحظات من مخيماتنا ورحلاتنا وورشاتنا",more:"عرض المزيد",all:"الكل",empty:"لا توجد صور بعد. تابعونا قريبًا!",err:"تعذّر تحميل الصور. حاول مرة أخرى لاحقًا.",cfg:"لم يتم ربط Firebase بعد. عدّل ملف firebase-config.js.",foot:"© 2026 فوج المستقبل للكشافة الإسلامية الجزائرية - جميع الحقوق محفوظة",lang:"English"},
+en:{brand:"El-Moustakbal Scouts",home:"Home",gal:"Activities Gallery",reg:"Join Us",title:"Group Activities Gallery",sub:"Moments from our camps, trips and workshops",more:"Load more",all:"All",empty:"No photos yet. Stay tuned!",err:"Could not load photos. Please try again later.",cfg:"Firebase is not connected yet. Edit firebase-config.js.",foot:"© 2026 El-Moustakbal Scout Group - All Rights Reserved",lang:"العربية"}};
+const CAT_EN={"مخيم":"Camp","رحلة":"Trip","قرآن كريم":"Quran","ورشة":"Workshop","خدمة تطوعية":"Volunteering","أخرى":"Other"};
+let lang='ar',items=[],last=null,done=false,filter='all',view=[],cur=0,loading=false;
+const PAGE=24, fullCache=new Map();
+const $=id=>document.getElementById(id);
+const catName=c=>lang==='ar'?c:(CAT_EN[c]||c);
+const fmt=d=>{if(!d)return'';const[a,b,c]=d.split('-');return c?`${c}/${b}/${a}`:d};
+
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(e=>{const v=T[lang][e.dataset.i18n];if(v)e.textContent=v});
+  $('langBtn').textContent=T[lang].lang;
+  document.title=lang==='ar'?'معرض أنشطة فوج المستقبل - بوقيرات':'Activities Gallery - El-Moustakbal Scouts';
+  render();
+}
+$('langBtn').onclick=()=>{lang=lang==='ar'?'en':'ar';applyLang()};
+
+function render(){
+  const cats=[...new Set(items.map(i=>i.category).filter(Boolean))];
+  $('chips').innerHTML=['all',...cats].map(c=>`<button class="chip ${filter===c?'on':''}" data-c="${c}">${c==='all'?T[lang].all:catName(c)}</button>`).join('');
+  $('chips').style.display=cats.length?'flex':'none';
+  view=filter==='all'?items:items.filter(i=>i.category===filter);
+  $('grid').innerHTML=view.map((p,i)=>`<button class="card" data-i="${i}">${p.category?`<span class="tag">${catName(p.category)}</span>`:''}<img loading="lazy" src="${p.thumb}" alt="${esc(p.title)}" ${p.w?`width="${p.w}" height="${p.h}"`:''}><div class="cap"><b>${esc(p.title)}</b><small>${fmt(p.date)}</small></div></button>`).join('');
+  const st=$('status');
+  if(!loading&&!view.length&&done){st.innerHTML=`<div class="big">📷</div>${T[lang].empty}`}else st.innerHTML='';
+  $('moreBtn').style.display=(!done&&!loading)?'inline-block':'none';
+}
+function esc(s=''){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('chips').onclick=e=>{const b=e.target.closest('.chip');if(b){filter=b.dataset.c;render()}};
+$('grid').onclick=e=>{const b=e.target.closest('.card');if(b)openLb(+b.dataset.i)};
+
+async function load(){
+  if(loading||done)return;
+  if(!configured){$('status').textContent=T[lang].cfg;done=true;return}
+  loading=true;$('moreBtn').style.display='none';
+  if(!items.length)$('grid').innerHTML=Array(6).fill('<div class="skel"></div>').join('');
+  try{
+    const q=query(collection(db,'photos'),orderBy('createdAt','desc'),...(last?[startAfter(last)]:[]),limit(PAGE));
+    const snap=await getDocs(q);
+    snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    last=snap.docs[snap.docs.length-1]||last;
+    if(snap.size<PAGE)done=true;
+  }catch(e){console.error(e);$('status').textContent=T[lang].err;done=true}
+  loading=false;render();
+}
+$('moreBtn').onclick=load;
+
+async function openLb(i){
+  cur=i;const p=view[i];if(!p)return;
+  $('lb').classList.add('open');document.body.style.overflow='hidden';
+  $('lbT').textContent=p.title;
+  $('lbD').textContent=[p.category?catName(p.category):'',fmt(p.date)].filter(Boolean).join(' • ');
+  $('lbDesc').textContent=p.desc||'';
+  const img=$('lbImg');img.alt=p.title;
+  if(fullCache.has(p.id)){img.className='';img.src=fullCache.get(p.id);return}
+  img.className='blur';img.src=p.thumb;
+  try{
+    const s=await getDoc(doc(db,'photoFull',p.id));
+    if(s.exists()){fullCache.set(p.id,s.data().data);if(view[cur]&&view[cur].id===p.id){img.src=s.data().data;img.className=''}}
+  }catch(e){img.className=''}
+}
+const step=n=>{if(view.length)openLb((cur+n+view.length)%view.length)};
+const closeLb=()=>{$('lb').classList.remove('open');document.body.style.overflow=''};
+$('lbX').onclick=closeLb;$('lbP').onclick=()=>step(-1);$('lbN').onclick=()=>step(1);
+$('lb').onclick=e=>{if(e.target.id==='lb')closeLb()};
+document.addEventListener('keydown',e=>{if(!$('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  const rtl=document.documentElement.dir==='rtl';
+  if(e.key==='ArrowLeft')step(rtl?1:-1);
+  if(e.key==='ArrowRight')step(rtl?-1:1)});
+
+applyLang();load();
+</script>
+</body>
+</html>
