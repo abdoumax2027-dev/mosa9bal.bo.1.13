@@ -16,7 +16,7 @@ nav a{color:#fff;text-decoration:none;font-weight:500;opacity:.85;font-size:.97r
 nav a:hover,nav a.on{opacity:1;color:var(--gold)}
 .lang-btn{background:transparent;color:var(--gold);border:1.5px solid var(--gold);padding:.3rem 1rem;border-radius:999px;font-weight:700;cursor:pointer;font-size:.9rem}
 .lang-btn:hover{background:var(--gold);color:var(--p-deep)}
-@media(max-width:720px){nav a.hide-m{display:none}.brand b{font-size:.9rem}}
+@media(max-width:720px){.bar{flex-wrap:wrap;gap:.4rem}.brand b{font-size:.9rem}nav{width:100%;gap:1rem;justify-content:space-between;overflow-x:auto;padding-bottom:.3rem}nav a{font-size:.9rem;white-space:nowrap}html{scroll-padding-top:120px}}
 .btn{display:inline-block;background:var(--gold);color:var(--p-deep);padding:.8rem 2rem;border-radius:12px;font-weight:900;font-size:1rem;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
 .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(242,182,50,.35)}
 .btn.purple{background:var(--p);color:#fff}
